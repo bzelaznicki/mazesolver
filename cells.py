@@ -1,7 +1,7 @@
 from graphics import *
 
 class Cell:
-    def __init__(self, win):
+    def __init__(self, win=None):
         self._x1 = None
         self._y1 = None
         self._x2 = None 
@@ -13,6 +13,9 @@ class Cell:
         self._win = win
 
     def draw(self,x1, x2, y1, y2):
+        if self._win is None:
+            return
+        
         self._x1 = x1
         self._x2 = x2
         self._y1 = y1
