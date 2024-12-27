@@ -24,6 +24,7 @@ class Maze:
         self._break_enterance_and_exit()
         self._mark_entrance_and_exit()
         self._break_walls_r(0,0)
+        self._reset_cells_visited()
 
     def _create_cells(self):
         for i in range(self._num_rows):
@@ -48,7 +49,7 @@ class Maze:
         if self._win is None:
             return
         self._win.redraw()
-        time.sleep(0.05)
+        time.sleep(0.005)
     
     def _break_enterance_and_exit(self):
         self._cells[0][0].has_top_wall = False
@@ -112,3 +113,48 @@ class Maze:
                 self._draw_cell(i + direction[0], j + direction[1])
                 self._animate()
                 self._break_walls_r(direction[0] + i, direction[1] + j)
+    def _reset_cells_visited(self):
+        for i in range(self._num_rows):
+            for j in range(self._num_cols):
+                self._cells[i][j].visited = False
+
+    def solve(self):
+        is_solved = self._solve_r(0,0)
+        self._reset_cells_visited()
+        print(f"Maze solved: {is_solved}")
+        return is_solved
+
+    def _solve_r(self,i,j):
+        self._animate()
+        self._cells[i][j].visited = True
+
+        if i == self._num_rows - 1 and j == self._num_cols - 1:
+            return True
+
+        while True:
+            to_visit = []
+            if i > 0 and not self._cells[i - 1][j].visited and not self._cells[i][j].has_top_wall:
+                to_visit.append((-1, 0))
+            if i < self._num_rows - 1 and not self._cells[i + 1][j].visited and not self._cells[i][j].has_bottom_wall:
+                to_visit.append((1, 0))
+            if j > 0 and not self._cells[i][j - 1].visited and not self._cells[i][j].has_left_wall:
+                to_visit.append((0, -1))
+            if j < self._num_cols - 1 and not self._cells[i][j + 1].visited and not self._cells[i][j].has_right_wall:
+                to_visit.append((0, 1))
+            
+            if len(to_visit) == 0:
+                return i == self._num_rows - 1 and j == self._num_cols - 1
+            else:  
+                direction = random.choice(to_visit)
+                next_i = i + direction[0]
+                next_j = j + direction[1]
+                # When trying a direction
+                current_cell = self._cells[i][j]
+                next_cell = self._cells[next_i][next_j]
+                current_cell.draw_move(next_cell)
+                self._animate()
+                if self._solve_r(next_i, next_j):
+                    return True
+                self._animate()
+                current_cell.draw_move(next_cell, True)  # undo the move
+            
