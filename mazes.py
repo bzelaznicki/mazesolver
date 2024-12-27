@@ -16,6 +16,8 @@ class Maze:
         self._cells = []
 
         self._create_cells()
+        self._break_enterance_and_exit()
+        self._mark_entrance_and_exit()
 
     def _create_cells(self):
         for i in range(self._num_rows):
@@ -41,3 +43,27 @@ class Maze:
             return
         self._win.redraw()
         time.sleep(0.05)
+    
+    def _break_enterance_and_exit(self):
+        self._cells[0][0].has_top_wall = False
+        self._cells[-1][-1].has_bottom_wall = False
+
+    def _mark_entrance_and_exit(self):
+        if self._win is None:
+            return
+        
+    # Draw entrance marker (top of first cell)
+        entrance_line = Line(
+            Point(self._x1, self._y1),
+            Point(self._x1 + self._cell_size_x, self._y1)
+        )
+        self._win.draw_line(entrance_line, "green")
+    
+    # Draw exit marker (bottom of last cell)
+        exit_x = self._x1 + (self._num_cols - 1) * self._cell_size_x
+        exit_y = self._y1 + self._num_rows * self._cell_size_y
+        exit_line = Line(
+            Point(exit_x, exit_y),
+            Point(exit_x + self._cell_size_x, exit_y)
+        )
+        self._win.draw_line(exit_line, "red")

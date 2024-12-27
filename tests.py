@@ -87,5 +87,38 @@ class Tests(unittest.TestCase):
             len(m1._cells[0]),
             size,
         )
+    def test_break_entrance_and_exit(self):
+    # Create a small test maze (maybe 3x3)
+        num_cols = num_rows = 3
+        maze = Maze(0, 0, num_rows, num_cols, 10, 10)
+    
+    # Verify entrance (top-left cell)
+        self.assertFalse(maze._cells[0][0].has_top_wall)
+    
+    # Verify exit (bottom-right cell)
+        self.assertFalse(maze._cells[-1][-1].has_bottom_wall)
+
+    def test_break_entrance_and_exit_other_walls(self):
+        num_cols = num_rows = 3
+        maze = Maze(0, 0, num_rows, num_cols, 10, 10)
+        # Entrance cell should still have other walls
+        self.assertTrue(maze._cells[0][0].has_left_wall)
+        self.assertTrue(maze._cells[0][0].has_right_wall)
+        self.assertTrue(maze._cells[0][0].has_bottom_wall)
+
+# Exit cell should still have other walls
+        self.assertTrue(maze._cells[-1][-1].has_left_wall)
+        self.assertTrue(maze._cells[-1][-1].has_right_wall)
+        self.assertTrue(maze._cells[-1][-1].has_top_wall)     
+
+    def test_break_entrance_and_exit_other_cells(self):
+        num_cols = num_rows = 3
+        maze = Maze(0, 0, num_rows, num_cols, 10, 10)
+
+        # Cell next to entrance should be unchanged
+        self.assertTrue(maze._cells[0][1].has_top_wall)
+
+# Cell above exit should be unchanged
+        self.assertTrue(maze._cells[-2][-1].has_bottom_wall)    
 if __name__ == "__main__":
     unittest.main()
