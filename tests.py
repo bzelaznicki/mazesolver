@@ -98,27 +98,21 @@ class Tests(unittest.TestCase):
     # Verify exit (bottom-right cell)
         self.assertFalse(maze._cells[-1][-1].has_bottom_wall)
 
-    def test_break_entrance_and_exit_other_walls(self):
-        num_cols = num_rows = 3
-        maze = Maze(0, 0, num_rows, num_cols, 10, 10)
-        # Entrance cell should still have other walls
-        self.assertTrue(maze._cells[0][0].has_left_wall)
-        self.assertTrue(maze._cells[0][0].has_right_wall)
-        self.assertTrue(maze._cells[0][0].has_bottom_wall)
 
-# Exit cell should still have other walls
-        self.assertTrue(maze._cells[-1][-1].has_left_wall)
-        self.assertTrue(maze._cells[-1][-1].has_right_wall)
-        self.assertTrue(maze._cells[-1][-1].has_top_wall)     
+    def test_break_walls_r_with_seed(self):
+        num_cols = 5
+        num_rows = 5
+        seed = 42
 
-    def test_break_entrance_and_exit_other_cells(self):
-        num_cols = num_rows = 3
-        maze = Maze(0, 0, num_rows, num_cols, 10, 10)
+        maze1 = Maze(0, 0, num_rows, num_cols, 10, 10, None, seed)
+        maze2 = Maze(0, 0, num_rows, num_cols, 10, 10, None, seed)
 
-        # Cell next to entrance should be unchanged
-        self.assertTrue(maze._cells[0][1].has_top_wall)
+        for i in range(num_rows):
+            for j in range(num_cols):
+                self.assertEqual(maze1._cells[i][j].has_top_wall, maze2._cells[i][j].has_top_wall)
+                self.assertEqual(maze1._cells[i][j].has_bottom_wall, maze2._cells[i][j].has_bottom_wall)
+                self.assertEqual(maze1._cells[i][j].has_left_wall, maze2._cells[i][j].has_left_wall)
+                self.assertEqual(maze1._cells[i][j].has_right_wall, maze2._cells[i][j].has_right_wall)
 
-# Cell above exit should be unchanged
-        self.assertTrue(maze._cells[-2][-1].has_bottom_wall)    
 if __name__ == "__main__":
     unittest.main()
